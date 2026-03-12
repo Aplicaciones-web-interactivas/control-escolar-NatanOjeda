@@ -14,6 +14,8 @@
                 <span class="font-bold text-xl">CE</span>
                 <a href="/inicio" class="hover:text-blue-200">Inicio</a>
                 <a href="/materias" class="hover:text-blue-200">Tareas (Materias)</a>
+                <a href="/horarios" class="hover:text-blue-200">Horarios</a>
+                <a href="/grupos" class="hover:text-blue-200">Grupos</a>
             </div>
             
             <div class="flex items-center space-x-4">

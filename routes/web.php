@@ -12,3 +12,7 @@ Route::post('/logout', [AuthController::class, 'cerrarSesion']);
 Route::get('/inicio', [AdminController::class, 'inicio']);
 Route::get('/materias', [AdminController::class, 'materias']);
 Route::post('/materias', [AdminController::class, 'guardarMateria']);
+Route::get('/horarios', [AdminController::class, 'horarios']);
+Route::post('/horarios', [AdminController::class, 'guardarHorario']);
+Route::get('/grupos', [AdminController::class, 'grupos']);
+Route::post('/grupos', [AdminController::class, 'guardarGrupo']);

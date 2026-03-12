@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId("usuario_id")->references("id")->on("users")->onDelete("cascade");
             $table->time("hora_inicio");
             $table->time("hora_fin");
-            $table->string("dias_semana", 5);
+            $table->string("dias_semana", 7);
             $table->timestamps();
         });
     }
