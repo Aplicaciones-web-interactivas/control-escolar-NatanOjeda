@@ -13,9 +13,11 @@
             <div class="flex space-x-6 items-center">
                 <span class="font-bold text-xl">CE</span>
                 <a href="/inicio" class="hover:text-blue-200">Inicio</a>
-                <a href="/materias" class="hover:text-blue-200">Tareas (Materias)</a>
+                <a href="/materias" class="hover:text-blue-200">Materias</a>
                 <a href="/horarios" class="hover:text-blue-200">Horarios</a>
                 <a href="/grupos" class="hover:text-blue-200">Grupos</a>
+                <a href="/inscripciones" class="hover:text-blue-200">Inscripciones</a>
+                <a href="/calificaciones" class="hover:text-blue-200">Calificaciones</a>
             </div>
             
             <div class="flex items-center space-x-4">

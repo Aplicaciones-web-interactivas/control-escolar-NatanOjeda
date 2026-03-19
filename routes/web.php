@@ -16,3 +16,7 @@ Route::get('/horarios', [AdminController::class, 'horarios']);
 Route::post('/horarios', [AdminController::class, 'guardarHorario']);
 Route::get('/grupos', [AdminController::class, 'grupos']);
 Route::post('/grupos', [AdminController::class, 'guardarGrupo']);
+Route::get('/calificaciones', [AdminController::class, 'calificaciones']);
+Route::post('/calificaciones', [AdminController::class, 'guardarCalificacion']);
+Route::get('/inscripciones', [AdminController::class, 'inscripciones']);
+Route::post('/inscripciones', [AdminController::class, 'guardarInscripcion']);

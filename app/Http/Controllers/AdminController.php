@@ -7,6 +7,8 @@ use App\Models\Materia;
 use App\Models\Horario;
 use App\Models\Grupo;
 use App\Models\User;
+use App\Models\Calificacion;
+use App\Models\Inscripcion;
 
 class AdminController extends Controller
 {
@@ -60,6 +62,41 @@ class AdminController extends Controller
         Grupo::create([
             'nombre_grupo' => $request->nombre_grupo,
             'horario_id' => $request->horario_id,
+        ]);
+        return back();
+    }
+
+    public function calificaciones() {
+        $grupos = Grupo::with('horario.materia')->get();
+        $usuarios = User::all();
+        
+        $calificaciones = Calificacion::with(['grupo.horario.materia', 'usuario'])->get();
+        $inscripciones = Inscripcion::with(['grupo.horario.materia', 'usuario'])->get();
+        
+        return view('calificaciones', compact('grupos', 'usuarios', 'calificaciones', 'inscripciones'));
+    }
+
+    public function guardarCalificacion(Request $request) {
+        Calificacion::updateOrCreate(
+            ['grupo_id' => $request->grupo_id, 'usuario_id' => $request->usuario_id],
+            ['calificacion' => $request->calificacion]
+        );
+        return back();
+    }
+
+    public function inscripciones() {
+        $grupos = Grupo::with('horario.materia')->get();
+        $usuarios = User::all();
+        
+        $inscripciones = Inscripcion::with(['grupo.horario.materia', 'usuario'])->get();
+        
+        return view('inscripciones', compact('grupos', 'usuarios', 'inscripciones'));
+    }
+
+    public function guardarInscripcion(Request $request) {
+        Inscripcion::create([
+            'usuario_id' => $request->usuario_id,
+            'grupo_id' => $request->grupo_id,
         ]);
         return back();
     }
