@@ -14,13 +14,24 @@ class AdminController extends Controller
 {
     public function inicio()
     {
-        return view('dashboard');
+        $totalMaterias = Materia::count();
+        $totalGrupos = Grupo::count();
+        $totalInscripciones = Inscripcion::count();
+        $totalUsuarios = User::count();
+
+        return view('dashboard', compact('totalMaterias', 'totalGrupos', 'totalInscripciones', 'totalUsuarios'));
     }
 
-    public function materias()
+    public function materias(Request $request)
     {
-        $materias = Materia::all();
-        return view('materias', compact('materias'));
+        $buscar = $request->get('buscar');
+
+        $materias = Materia::when($buscar, function ($query, $buscar) {
+            return $query->where('nombre_materia', 'ILIKE', '%' . $buscar . '%')
+                         ->orWhere('clave', 'ILIKE', '%' . $buscar . '%');
+        })->orderBy('id', 'desc')->paginate(5); 
+
+        return view('materias', compact('materias', 'buscar'));
     }
 
     public function guardarMateria(Request $request)
@@ -29,15 +40,25 @@ class AdminController extends Controller
             'nombre_materia' => $request->nombre_materia,
             'clave' => $request->clave,
         ]);
-        return back();
+        
+        return back()->with('success', '¡Materia registrada exitosamente!');
     }
 
-    public function horarios() {
+    public function horarios(Request $request) {
         $materias = Materia::all();
         $usuarios = User::all();
-        $horarios = Horario::with(['materia', 'usuario'])->get(); 
+        $buscar = $request->get('buscar');
+
+        $horarios = Horario::with(['materia', 'usuario'])
+            ->when($buscar, function ($query, $buscar) {
+                $query->whereHas('materia', function ($q) use ($buscar) {
+                    $q->where('nombre_materia', 'ILIKE', '%' . $buscar . '%');
+                })->orWhereHas('usuario', function ($q) use ($buscar) {
+                    $q->where('name', 'ILIKE', '%' . $buscar . '%');
+                });
+            })->orderBy('id', 'desc')->paginate(5); 
     
-        return view('horarios', compact('materias', 'usuarios', 'horarios'));
+        return view('horarios', compact('materias', 'usuarios', 'horarios', 'buscar'));
     }
 
     public function guardarHorario(Request $request) {
@@ -52,10 +73,19 @@ class AdminController extends Controller
         return back();
     }
 
-    public function grupos() {
+    public function grupos(Request $request) {
         $horarios = Horario::with(['materia', 'usuario'])->get();
-        $grupos = Grupo::with('horario.materia')->get();
-        return view('grupos', compact('horarios', 'grupos'));
+        $buscar = $request->get('buscar');
+
+        $grupos = Grupo::with('horario.materia')
+            ->when($buscar, function ($query, $buscar) {
+                $query->where('nombre_grupo', 'ILIKE', '%' . $buscar . '%')
+                      ->orWhereHas('horario.materia', function ($q) use ($buscar) {
+                          $q->where('nombre_materia', 'ILIKE', '%' . $buscar . '%');
+                      });
+            })->orderBy('id', 'desc')->paginate(5);
+
+        return view('grupos', compact('horarios', 'grupos', 'buscar'));
     }
 
     public function guardarGrupo(Request $request) {
@@ -66,14 +96,23 @@ class AdminController extends Controller
         return back();
     }
 
-    public function calificaciones() {
+    public function calificaciones(Request $request) {
         $grupos = Grupo::with('horario.materia')->get();
         $usuarios = User::all();
+        $buscar = $request->get('buscar');
         
-        $calificaciones = Calificacion::with(['grupo.horario.materia', 'usuario'])->get();
-        $inscripciones = Inscripcion::with(['grupo.horario.materia', 'usuario'])->get();
+        $calificaciones = Calificacion::with(['grupo.horario.materia', 'usuario'])
+            ->when($buscar, function ($query, $buscar) {
+                $query->whereHas('usuario', function ($q) use ($buscar) {
+                    $q->where('name', 'ILIKE', '%' . $buscar . '%');
+                })->orWhereHas('grupo', function ($q) use ($buscar) {
+                    $q->where('nombre_grupo', 'ILIKE', '%' . $buscar . '%');
+                });
+            })->orderBy('id', 'desc')->paginate(5);
         
-        return view('calificaciones', compact('grupos', 'usuarios', 'calificaciones', 'inscripciones'));
+        $inscripcionesTodas = Inscripcion::with(['grupo.horario.materia', 'usuario'])->get();
+        
+        return view('calificaciones', compact('grupos', 'usuarios', 'calificaciones', 'buscar', 'inscripcionesTodas'));
     }
 
     public function guardarCalificacion(Request $request) {
@@ -84,13 +123,21 @@ class AdminController extends Controller
         return back();
     }
 
-    public function inscripciones() {
+    public function inscripciones(Request $request) {
         $grupos = Grupo::with('horario.materia')->get();
         $usuarios = User::all();
+        $buscar = $request->get('buscar');
         
-        $inscripciones = Inscripcion::with(['grupo.horario.materia', 'usuario'])->get();
+        $inscripciones = Inscripcion::with(['grupo.horario.materia', 'usuario'])
+            ->when($buscar, function ($query, $buscar) {
+                $query->whereHas('usuario', function ($q) use ($buscar) {
+                    $q->where('name', 'ILIKE', '%' . $buscar . '%');
+                })->orWhereHas('grupo', function ($q) use ($buscar) {
+                    $q->where('nombre_grupo', 'ILIKE', '%' . $buscar . '%');
+                });
+            })->orderBy('id', 'desc')->paginate(5);
         
-        return view('inscripciones', compact('grupos', 'usuarios', 'inscripciones'));
+        return view('inscripciones', compact('grupos', 'usuarios', 'inscripciones', 'buscar'));
     }
 
     public function guardarInscripcion(Request $request) {

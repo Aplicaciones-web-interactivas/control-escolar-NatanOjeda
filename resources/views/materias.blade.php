@@ -25,10 +25,21 @@
         </div>
 
         <div class="bg-white p-6 rounded shadow-md">
-            <h2 class="text-xl font-bold mb-4">Materias Existentes</h2>
+            
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Materias Existentes</h2>
+                
+                <form action="/materias" method="GET" class="flex">
+                    <input type="text" name="buscar" value="{{ $buscar ?? '' }}" placeholder="Buscar..." class="border p-2 rounded-l">
+                    <button type="submit" class="bg-gray-800 text-white px-3 py-2 rounded-r">Buscar</button>
+                    @if(!empty($buscar))
+                        <a href="/materias" class="ml-2 mt-2 text-red-500 text-sm hover:underline">Limpiar</a>
+                    @endif
+                </form>
+            </div>
             
             @if($materias->isEmpty())
-                <p class="text-gray-500 text-center py-4">Aún no hay materias registradas.</p>
+                <p class="text-gray-500 text-center py-4">Aún no hay materias registradas o no se encontró la búsqueda.</p>
             @else
                 <table class="w-full text-left border-collapse">
                     <thead>
@@ -46,6 +57,10 @@
                         @endforeach
                     </tbody>
                 </table>
+
+                <div class="mt-4">
+                    {{ $materias->appends(['buscar' => $buscar ?? ''])->links() }}
+                </div>
             @endif
         </div>
 
