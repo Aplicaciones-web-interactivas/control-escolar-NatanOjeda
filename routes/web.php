@@ -20,3 +20,6 @@ Route::get('/calificaciones', [AdminController::class, 'calificaciones']);
 Route::post('/calificaciones', [AdminController::class, 'guardarCalificacion']);
 Route::get('/inscripciones', [AdminController::class, 'inscripciones']);
 Route::post('/inscripciones', [AdminController::class, 'guardarInscripcion']);
+Route::get('/tareas', [AdminController::class, 'tareas']);
+Route::post('/tareas', [AdminController::class, 'guardarTarea']);
+Route::post('/entregas', [AdminController::class, 'subirEntrega']);

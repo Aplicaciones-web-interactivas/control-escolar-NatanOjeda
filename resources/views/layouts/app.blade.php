@@ -18,6 +18,7 @@
                 <a href="/grupos" class="px-3 py-2 rounded-md transition {{ request()->is('grupos') ? 'bg-blue-600 text-white font-bold shadow-inner' : 'text-blue-100 hover:bg-blue-700 hover:text-white' }}">Grupos</a>                
                 <a href="/inscripciones" class="px-3 py-2 rounded-md transition {{ request()->is('inscripciones') ? 'bg-blue-600 text-white font-bold shadow-inner' : 'text-blue-100 hover:bg-blue-700 hover:text-white' }}">Inscripciones</a>              
                 <a href="/calificaciones" class="px-3 py-2 rounded-md transition {{ request()->is('calificaciones') ? 'bg-blue-600 text-white font-bold shadow-inner' : 'text-blue-100 hover:bg-blue-700 hover:text-white' }}">Calificaciones</a>
+                <a href="/tareas" class="px-3 py-2 rounded-md transition {{ request()->is('tareas') ? 'bg-blue-600 text-white font-bold shadow-inner' : 'text-blue-100 hover:bg-blue-700 hover:text-white' }}">Tareas</a>            
             </div>
             
             <div class="flex items-center space-x-4">

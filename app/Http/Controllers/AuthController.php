@@ -24,7 +24,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'clave_institucional' => $request->clave_institucional,
             'password' => Hash::make($request->password),
-            'rol' => 'ADMIN',
+            'rol' => $request->rol,
             'esta_activo' => true
         ]);
 

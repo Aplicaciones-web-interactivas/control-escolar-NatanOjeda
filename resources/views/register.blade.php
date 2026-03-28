@@ -24,6 +24,13 @@
                 <label>Contraseña</label>
                 <input type="password" name="password" class="w-full border p-2 rounded" required>
             </div>
+            <div class="mb-4">
+                <label>¿Qué rol tendrás en el sistema?</label>
+                <select name="rol" class="w-full border p-2 rounded" required>
+                    <option value="ALUMNO">Soy Alumno</option>
+                    <option value="MAESTRO">Soy Maestro</option>
+                </select>
+            </div>
             <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded">Registrarse</button>
         </form>
         <div class="mt-4 text-center">

@@ -9,6 +9,8 @@ use App\Models\Grupo;
 use App\Models\User;
 use App\Models\Calificacion;
 use App\Models\Inscripcion;
+use App\Models\Tarea;
+use App\Models\Entrega;
 
 class AdminController extends Controller
 {
@@ -146,5 +148,50 @@ class AdminController extends Controller
             'grupo_id' => $request->grupo_id,
         ]);
         return back();
+    }
+
+    public function tareas() {
+        $usuario = auth()->user();
+        if ($usuario->rol === 'MAESTRO') {
+            $grupos = Grupo::whereHas('horario', function($q) use ($usuario) {
+                $q->where('usuario_id', $usuario->id);
+            })->with('horario.materia')->get();
+            $tareas = Tarea::whereIn('grupo_id', $grupos->pluck('id'))
+                           ->with(['grupo.horario.materia', 'entregas.usuario'])
+                           ->orderBy('id', 'desc')->get();
+            return view('tareas', compact('grupos', 'tareas', 'usuario'));
+        } elseif ($usuario->rol === 'ALUMNO') {
+            $inscripciones = Inscripcion::where('usuario_id', $usuario->id)->pluck('grupo_id');
+            $tareas = Tarea::whereIn('grupo_id', $inscripciones)
+                           ->with(['grupo.horario.materia', 'entregas' => function($q) use ($usuario) {
+                               $q->where('usuario_id', $usuario->id); 
+                           }])
+                           ->orderBy('id', 'desc')->get();
+            return view('tareas', compact('tareas', 'usuario'));
+        }
+        return redirect('/inicio')->with('success', 'Inicia sesión como MAESTRO o ALUMNO para ver el módulo de tareas.');
+    }
+
+    public function guardarTarea(Request $request) {
+        Tarea::create([
+            'grupo_id' => $request->grupo_id,
+            'titulo' => $request->titulo,
+            'descripcion' => $request->descripcion,
+        ]);
+        return back()->with('success', '¡Tarea asignada correctamente al grupo!');
+    }
+
+    public function subirEntrega(Request $request) {
+        $request->validate([
+            'archivo_pdf' => 'required|mimes:pdf|max:5120',
+            'tarea_id' => 'required'
+        ]);
+        $rutaArchivo = $request->file('archivo_pdf')->store('entregas', 'public');
+        Entrega::create([
+            'tarea_id' => $request->tarea_id,
+            'usuario_id' => auth()->id(),
+            'archivo_pdf' => $rutaArchivo
+        ]);
+        return back()->with('success', '¡Tu archivo PDF se entregó con éxito!');
     }
 }
